@@ -5,9 +5,13 @@ Version: 0.1.0
 Authors@R: person("Stefan Milton", "Bache", email = "stefan@stefanbache.dk",
   role = c("aut", "cre"))
 Description: Remarks act as simple pieces of information which are attached to
-  objects, which may be of interest to "stakeholder" functionality. For example,
-  there could be potential reasons for and problems associated with a limited
-  data extract which is useful to pass on to functionality using or manipulating
-  the data in subsequent routines.
+    objects, which may be of interest to "stakeholder" functionality. For example,
+    there could be potential reasons for and problems associated with a limited data
+    extract which is useful to pass on to functionality using or manipulating the
+    data in subsequent routines.
 License: MIT + file LICENSE
-Imports: dplyr, ensurer, R6
+Imports:
+    dplyr,
+    ensurer,
+    R6
+RoxygenNote: 5.0.0

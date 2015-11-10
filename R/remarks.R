@@ -122,6 +122,9 @@ remark <- function(key, level, remark, origin = NA_character_)
   if (inherits(remark, "formula"))
     remark <- str_interp(remark[[2L]], parent.frame())
 
+  if (inherits(origin, "formula"))
+    origin <- str_interp(origin[[2L]], parent.frame())
+
   r <- data.frame(Key       = as.character(key)
                  ,Timestamp = Sys.time()
                  ,Level     = level
@@ -140,18 +143,24 @@ remark <- function(key, level, remark, origin = NA_character_)
 #' @export
 remark. <- function(., key, level, remark, origin = NA_character_)
 {
-  if (inherits(remark, "formula")) {
+  interp_remark <- inherits(remark, "formula")
+  interp_origin <- inherits(origin, "formula")
+
+  if (interp_remark ||interp_origin) {
     e <- new.env(parent = parent.frame())
     e[["."]] <- .
-    remark <- str_interp(remark[[2L]], e)
+    if (interp_remark)
+      remark <- str_interp(remark[[2L]], e)
+    if (interp_origin)
+      origin <- str_interp(origin[[2L]], e)
   }
 
   r <- data.frame(Key       = as.character(key)
-                  ,Timestamp = Sys.time()
-                  ,Level     = level
-                  ,Remark    = remark
-                  ,Origin    = origin
-                  ,stringsAsFactors = FALSE)
+                 ,Timestamp = Sys.time()
+                 ,Level     = level
+                 ,Remark    = remark
+                 ,Origin    = origin
+                 ,stringsAsFactors = FALSE)
 
   .remarks$add(r)
   .
