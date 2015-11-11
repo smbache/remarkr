@@ -4,7 +4,7 @@
 is_valid_remark <- ensures(
   is.data.frame ~
       "The remarks should be in a data.frame!"
- ,identical(colnames(.), c("Key", "Timestamp", "Level", "Remark", "Origin")) ~
+ ,identical(colnames(.), c("Key", "Timestamp", "Level", "Remark", "Origin", "Target")) ~
       "The remarks data.frame has wrong column names!"
  ,identical(lapply(., class), lapply(no_remarks(), class)) ~
       "The remarks data.frame has wrong column classes!"
@@ -22,6 +22,7 @@ no_remarks <- function()
                    ,Level     = character()
                    ,Remark    = character()
                    ,Origin    = character()
+                   ,Target    = character()
                    ,stringsAsFactors = FALSE))
 }
 
@@ -114,10 +115,11 @@ clear_remarks <- function(...)
 #' @param remark character: The remark itself. This can be a string interpolation
 #'   formula.
 #' @param origin character: The origin of your remark.
+#' @param target character: The target of your remark.
 #'
 #' @return A remark \code{data.frame}.
 #' @export
-remark <- function(key, level, remark, origin = NA_character_)
+remark <- function(key, level, remark, origin = NA_character_, target = NA_character_)
 {
   if (inherits(remark, "formula"))
     remark <- str_interp(remark[[2L]], parent.frame())
@@ -125,11 +127,15 @@ remark <- function(key, level, remark, origin = NA_character_)
   if (inherits(origin, "formula"))
     origin <- str_interp(origin[[2L]], parent.frame())
 
+  if (inherits(target, "formula"))
+    target <- str_interp(target[[2L]], parent.frame())
+
   r <- data.frame(Key       = as.character(key)
                  ,Timestamp = Sys.time()
                  ,Level     = level
                  ,Remark    = remark
                  ,Origin    = origin
+                 ,Target    = target
                  ,stringsAsFactors = FALSE)
 
   .remarks$add(r)
@@ -141,18 +147,21 @@ remark <- function(key, level, remark, origin = NA_character_)
 #' @param . A value which is available for string interpolation, and is returned.
 #'
 #' @export
-remark. <- function(., key, level, remark, origin = NA_character_)
+remark. <- function(., key, level, remark, origin = NA_character_, target = NA_character_)
 {
   interp_remark <- inherits(remark, "formula")
   interp_origin <- inherits(origin, "formula")
+  interp_target <- inherits(target, "formula")
 
-  if (interp_remark ||interp_origin) {
+  if (interp_remark ||interp_origin || interp_target) {
     e <- new.env(parent = parent.frame())
     e[["."]] <- .
     if (interp_remark)
       remark <- str_interp(remark[[2L]], e)
     if (interp_origin)
       origin <- str_interp(origin[[2L]], e)
+    if (inherits(target, "formula"))
+      target <- str_interp(target[[2L]], e)
   }
 
   r <- data.frame(Key       = as.character(key)
@@ -160,6 +169,7 @@ remark. <- function(., key, level, remark, origin = NA_character_)
                  ,Level     = level
                  ,Remark    = remark
                  ,Origin    = origin
+                 ,Target    = target
                  ,stringsAsFactors = FALSE)
 
   .remarks$add(r)

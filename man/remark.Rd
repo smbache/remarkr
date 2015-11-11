@@ -5,9 +5,10 @@
 \alias{remark.}
 \title{Create or Add a Remark}
 \usage{
-remark(key, level, remark, origin = NA_character_)
+remark(key, level, remark, origin = NA_character_, target = NA_character_)
 
-remark.(., key, level, remark, origin = NA_character_)
+remark.(., key, level, remark, origin = NA_character_,
+  target = NA_character_)
 }
 \arguments{
 \item{key}{character: The remark key.}
@@ -18,6 +19,8 @@ remark.(., key, level, remark, origin = NA_character_)
 formula.}
 
 \item{origin}{character: The origin of your remark.}
+
+\item{target}{character: The target of your remark.}
 
 \item{.}{A value which is available for string interpolation, and is returned.}
 }
